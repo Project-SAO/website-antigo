@@ -51,35 +51,42 @@
         <div class="collapse navbar-collapse" id="navbarExample01">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" aria-current="page" href="http://servidor-202/andrefrancisco">Home</a>
+              <a class="nav-link" aria-current="page" href="http://servidor-202/project_sao">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="about_us/index.php" rel="nofollow"
-                target="_blank">About Us</a>
+              <a class="nav-link" href="amogus/index.php" rel="nofollow"
+                target="_blank">Amogus</a>
             </li>
-			<div class="btn-group shadow-0">
-			  <button
-				type="button"
-				class="btn btn-link dropdown-toggle"
-				data-mdb-toggle="dropdown"
-				aria-expanded="false"
-			  >
-				Action
-			  </button>
-			  <ul class="dropdown-menu">
-				<li><a class="dropdown-item" href="#">Action</a></li>
-				<li><a class="dropdown-item" href="#">Another action</a></li>
-				<li><a class="dropdown-item" href="#">Something else here</a></li>
-				<li>
-				  <hr class="dropdown-divider" />
-				</li>
-				<li><a class="dropdown-item" href="#">Separated link</a></li>
-			  </ul>
-			</div>
           </ul>
 
           <ul class="navbar-nav d-flex flex-row">
             <!-- Icons -->
+            <li class="nav-item dropdown pe-2">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdownMenuLink"
+                role="button"
+                data-mdb-toggle="dropdown"
+                aria-expanded="false"
+              >
+              <img
+                src=""
+                class="rounded-circle"
+                height="22"
+                alt=""
+                loading="lazy"
+              />
+              </a>
+                <ul
+                  class="dropdown-menu"
+                  aria-labelledby="navbarDropdownMenuLink"
+                >
+                <li>
+                  <a class="dropdown-item" href="#">Login</a>
+                </li>
+              </ul>
+            </li>
             <li class="nav-item me-3 me-lg-0">
               <a class="nav-link" href="https://discord.gg/FsXF8Fj" rel="nofollow"
                 target="_blank">
@@ -107,8 +114,8 @@
       <div class="mask" style="background-color: rgba(0, 0, 0, 0.8);">
         <div class="container d-flex align-items-center justify-content-center text-center h-100">
           <div class="text-white">
-            <h1 class="mb-3">Welcome to Project SAO</h1>
-            <h5 class="mb-4">In this website, you can find everything you need to join our project.</h5>
+            <h1 class="mb-4">Welcome to Project SAO</h1>
+            <h5 class="mb-2">In this website, you can find everything you need to join our project.<br>If you need any kind of help, contact our support at: fca.10.fa@gmail.com</h5>
           </div>
         </div>
       </div>
@@ -329,8 +336,8 @@
 
     <!-- Copyright -->
     <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-      © 2020 Copyright:
-      <a class="text-dark" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+      © 2021 Copyright:
+      <a class="text-dark">Project SAO</a>
     </div>
     <!-- Copyright -->
   </footer>
