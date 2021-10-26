@@ -55,7 +55,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="amogus/index.php" rel="nofollow"
-                target="_blank">Amogus</a>
+                target="_blank">sus</a>
             </li>
           </ul>
 
