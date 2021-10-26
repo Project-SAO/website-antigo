@@ -1,3 +1,124 @@
+<?php
+  include ("../connection.php");
+  
+  
+  if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+    
+    $erro=0;
+
+    /* se for um registo */
+    if($_POST['form']=="registo"){
+      
+      /* verifica se jรก existe o user */
+      $sql = "SELECT email,password,username FROM user WHERE email='".mysqli_real_escape_string($db,$_POST['email'])."'";
+    
+      //echo $sql;
+    
+      if($result = mysqli_query($db,$sql) && isset($result['email'])){
+        
+        $erro=3;
+      }
+      else{ 
+      
+        /* contra o sql injection */
+        $username= mysqli_real_escape_string($db,$_POST['username']);
+        $email = mysqli_real_escape_string($db,$_POST['email']);
+        $password = sha1(mysqli_real_escape_string($db,$_POST['password']));
+        
+            
+        $sql="INSERT INTO user(username,email,password) VALUES('".$username."','".$email."','".$password."')";
+        
+       //echo $sql;
+		    //exit();
+        
+        $result=mysqli_query($db,$sql);
+        
+        /* se houver erro no insert */
+        if(!$result){
+          $erro=4;
+        }
+        else{
+          
+          session_start();
+          $_SESSION['nome'] = $username;
+          $_SESSION['email'] = $email;
+     
+		  
+          $rememberme = isset($_POST['rememberme']) ? true : false;
+          if ($rememberme){
+          setcookie('username',$username, time() + 3600*24*30);
+          }
+          
+          
+          header('Location:..\main\index.php');
+          exit;
+        }
+      }
+    }
+    
+    /* se for login */
+    if($_POST['form']=="login"){
+      
+     
+        $email=mysqli_real_escape_string($db,$_POST['email']);
+        $crypt_pass = sha1($_POST['password']); // cifra a password do form
+        $found = false;
+        $username = '';
+
+       /* verifica a existencia do user e obtem a password para poder comparar com a password dada */
+       $sql = "SELECT user_id,username,password,email FROM user WHERE email='$email'";
+     
+        $result = mysqli_query($db,$sql);
+        if ($data = mysqli_fetch_array($result)){
+        
+            /* se as passwords forem iguais ?  então existe o utilizador */
+           /* echo $crypt_pass."------>". $data['password'];
+            exit();*/
+            
+            if ($crypt_pass == $data['password']){
+                $found = true;
+                $username = $data['username'];
+                $email=$data['email'];
+            }
+        }
+        else{
+            $erro=1;
+         }		
+    
+    
+      if($found == false) // não existe user redirect para registo
+      {
+        $erro=1;
+      }
+		else // existe user então cria a sessão e redirect para a página inicial 
+		{
+            session_start();
+            $_SESSION['username'] = $username;
+            $_SESSION['email'] = $email;
+
+            $rememberme = isset($_POST['rememberme']) ? true : false;
+            if ($rememberme){
+                setcookie('username',$username, time() + 3600*24*30);
+			}  
+		}
+		
+		$username = isset($_COOKIE['username']) ? $_COOKIE['username'] : '';
+		$password = isset($_COOKIE['password']) ? $_COOKIE['password'] : '';
+	  
+	  
+		header('Location:..\main\index.php');
+		exit;
+    }
+    
+  }
+  else{
+    session_start();
+  }
+  
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,37 +172,18 @@
         <div class="collapse navbar-collapse" id="navbarExample01">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" aria-current="page" href="#intro">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA" rel="nofollow"
-                target="_blank">Learn Bootstrap 5</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://mdbootstrap.com/docs/standard/" target="_blank">Download MDB UI KIT</a>
+              <a class="nav-link" aria-current="page" href="../main/index.php">Home</a>
             </li>
           </ul>
-
           <ul class="navbar-nav d-flex flex-row">
             <!-- Icons -->
             <li class="nav-item me-3 me-lg-0">
-              <a class="nav-link" href="https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA" rel="nofollow"
-                target="_blank">
-                <i class="fab fa-youtube"></i>
-              </a>
-            </li>
-            <li class="nav-item me-3 me-lg-0">
-              <a class="nav-link" href="https://www.facebook.com/mdbootstrap" rel="nofollow" target="_blank">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-            </li>
-            <li class="nav-item me-3 me-lg-0">
-              <a class="nav-link" href="https://twitter.com/MDBootstrap" rel="nofollow" target="_blank">
+              <a class="nav-link" href="https://twitter.com/kiko__2003_" rel="nofollow" target="_blank">
                 <i class="fab fa-twitter"></i>
               </a>
             </li>
             <li class="nav-item me-3 me-lg-0">
-              <a class="nav-link" href="https://github.com/mdbootstrap/mdb-ui-kit" rel="nofollow" target="_blank">
+              <a class="nav-link" href="https://github.com/Project-SAO" rel="nofollow" target="_blank">
                 <i class="fab fa-github"></i>
               </a>
             </li>
@@ -97,16 +199,19 @@
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-xl-5 col-md-8">
-              <form class="bg-white rounded shadow-5-strong p-5">
+              <form action="index.php" method="POST" class="bg-white rounded shadow-5-strong p-5">
+
+                <input type="hidden" name="form" value="login"/>
+
                 <!-- Email input -->
                 <div class="form-outline mb-4">
-                  <input type="email" id="form1Example1" class="form-control" />
+                  <input type="email" name="email" id="form1Example1" class="form-control" />
                   <label class="form-label" for="form1Example1">Email address</label>
                 </div>
 
                 <!-- Password input -->
                 <div class="form-outline mb-4">
-                  <input type="password" id="form1Example2" class="form-control" />
+                  <input type="password" name="password" id="form1Example2" class="form-control" />
                   <label class="form-label" for="form1Example2">Password</label>
                 </div>
 
@@ -115,7 +220,7 @@
                   <div class="col d-flex justify-content-center">
                     <!-- Checkbox -->
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="form1Example3" checked />
+                      <input class="form-check-input" name="checkbox" type="checkbox" value="" id="form1Example3" checked />
                       <label class="form-check-label" for="form1Example3">
                         Remember me
                       </label>
@@ -127,7 +232,19 @@
                     <a href="#!">Forgot password?</a>
                   </div>
                 </div>
-
+				
+			<div class="row">
+				<div class="col-md-11 text-center">
+                    <!-- Simple link -->
+                    <a href="../registo/index.php">Don't have an account ? Register now.</a>
+                </div>
+				
+				<div class="col-md-11 text-center">
+                    <!-- Simple link -->
+                    <a><br></a>
+                </div>
+			</div>
+			
                 <!-- Submit button -->
                 <button type="submit" class="btn btn-primary btn-block">Sign in</button>
               </form>
@@ -142,33 +259,14 @@
 
   <!--Footer-->
   <footer class="bg-light text-lg-start">
-    <div class="py-4 text-center">
-      <a role="button" class="btn btn-primary btn-lg m-2"
-        href="https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA" rel="nofollow" target="_blank">
-        Learn Bootstrap 5
-      </a>
-      <a role="button" class="btn btn-primary btn-lg m-2" href="https://mdbootstrap.com/docs/standard/" target="_blank">
-        Download MDB UI KIT
-      </a>
-    </div>
-
     <hr class="m-0" />
-
     <div class="text-center py-4 align-items-center">
-      <p>Follow MDB on social media</p>
-      <a href="https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA" class="btn btn-primary m-1" role="button"
-        rel="nofollow" target="_blank">
-        <i class="fab fa-youtube"></i>
-      </a>
-      <a href="https://www.facebook.com/mdbootstrap" class="btn btn-primary m-1" role="button" rel="nofollow"
-        target="_blank">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <a href="https://twitter.com/MDBootstrap" class="btn btn-primary m-1" role="button" rel="nofollow"
+      <p>Follow Project SAO on social media</p>
+      <a href="https://twitter.com/kiko__2003_" class="btn btn-primary m-1" role="button" rel="nofollow"
         target="_blank">
         <i class="fab fa-twitter"></i>
       </a>
-      <a href="https://github.com/mdbootstrap/mdb-ui-kit" class="btn btn-primary m-1" role="button" rel="nofollow"
+      <a href="https://github.com/Project-SAO" class="btn btn-primary m-1" role="button" rel="nofollow"
         target="_blank">
         <i class="fab fa-github"></i>
       </a>
@@ -176,8 +274,8 @@
 
     <!-- Copyright -->
     <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-      © 2020 Copyright:
-      <a class="text-dark" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+      © 2021 Copyright:
+      <a class="text-dark" href="https://mdbootstrap.com/">Project SAO</a>
     </div>
     <!-- Copyright -->
   </footer>
